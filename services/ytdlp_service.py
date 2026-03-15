@@ -50,7 +50,7 @@ def download_video(url: str, format_ext: str = 'mp4'):
     if not is_duration_acceptable(info.get('duration')):
         raise ValueError("Video is too long to download.")
         
-    output_filename = f"%(title)s.%(ext)s"
+    output_filename = f"%(title).100B.%(ext)s"
     output_template = os.path.join(TEMP_DIR, output_filename)
     
     if format_ext == 'mp4':
@@ -59,6 +59,8 @@ def download_video(url: str, format_ext: str = 'mp4'):
             'outtmpl': output_template,
             'merge_output_format': 'mp4',
             'no_playlist': True,
+            'restrictfilenames': True,  # Fixes Errno 22 Invalid Argument for Windows
+            'windowsfilenames': True,
             'quiet': True,
         }
     else:
@@ -67,6 +69,8 @@ def download_video(url: str, format_ext: str = 'mp4'):
             'format': 'best',
             'outtmpl': output_template,
             'no_playlist': True,
+            'restrictfilenames': True,
+            'windowsfilenames': True,
             'quiet': True,
         }
 
@@ -86,13 +90,15 @@ def download_audio(url: str):
     if not is_duration_acceptable(info.get('duration')):
         raise ValueError("Video is too long to download.")
         
-    output_filename = f"%(title)s.%(ext)s"
+    output_filename = f"%(title).100B.%(ext)s"
     output_template = os.path.join(TEMP_DIR, output_filename)
     
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': output_template,
         'no_playlist': True,
+        'restrictfilenames': True,
+        'windowsfilenames': True,
         'quiet': True,
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
